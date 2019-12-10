@@ -12,10 +12,56 @@ class _GamePageState extends State<GamePage> {
   List<bool> votes = createBools(playersBox.length);
   List<bool> mission = createBools(playersBox.length);
   List<bool> commander = createBools(playersBox.length);
-  List<Widget> moves = new List();
-
+  List<List<Widget>> moves = initListOfLists(playersBox.length);
+  List<Widget> checks = new List(playersBox.length);
   @override
   Widget build(BuildContext context) {
+    ListView play = new ListView.builder(
+      itemCount: players.length,
+      itemBuilder: (context, i) {
+        String playerName = players[i];
+        return Card(
+          color: Colors.green,
+          child: Row(
+            children: <Widget>[
+              RotatedBox(
+                child: Text(playerName),
+                quarterTurns: -1,
+              ),
+              Column(
+                children: <Widget>[
+                  Checkbox(
+                    value: votes[i],
+                    onChanged: (value) {
+                      setState(() {
+                        votes[i] = value;
+                      });
+                    },
+                  ),
+                  Checkbox(
+                    value: mission[i],
+                    onChanged: (value) {
+                      setState(() {
+                        mission[i] = value;
+                      });
+                    },
+                  ),
+                  Checkbox(
+                    value: commander[i],
+                    onChanged: (value) {
+                      setState(() {
+                        commander[i] = value;
+                      });
+                    },
+                  )
+                ],
+              ),
+              Row(children: moves[i]),
+            ],
+          ),
+        );
+      },
+    );
     return Scaffold(
         appBar: AppBar(
           title: Text("Game"),
@@ -25,68 +71,37 @@ class _GamePageState extends State<GamePage> {
               color: Colors.blue,
               onPressed: () {
                 setState(() {
-                  moves.add(addCard(true, false, true, "success"));
+                  for(int i = 0; i < playersBox.length; i++){
+                    moves[i].add(addCard(votes[i], mission[i], commander[i], "success"));
+                  }
                 });
               },
             ),
             IconButton(
               icon: Icon(Icons.cancel),
               color: Colors.red,
-              onPressed: () {},
+              onPressed: () {
+                setState(() {
+                  for(int i = 0; i < playersBox.length; i++){
+                    moves[i].add(addCard(votes[i], mission[i], commander[i], "fail"));
+                  }
+                });
+              },
             ),
             IconButton(
               icon: Icon(Icons.cached),
               color: Colors.grey,
-              onPressed: () {},
+              onPressed: () {
+                setState(() {
+                  for(int i = 0; i < playersBox.length; i++){
+                    moves[i].add(addCard(votes[i], mission[i], commander[i], "whatever"));
+                  }
+                });
+              },
             ),
           ],
         ),
-        body: ListView.builder(
-          itemCount: players.length,
-          itemBuilder: (context, i) {
-            String playerName = players[i];
-            return Card(
-              color: Colors.green,
-              child: Row(
-                children: <Widget>[
-                  RotatedBox(
-                    child: Text(playerName),
-                    quarterTurns: -1,
-                  ),
-                  Column(
-                    children: <Widget>[
-                      Checkbox(
-                        value: votes[i],
-                        onChanged: (value) {
-                          setState(() {
-                            votes[i] = value;
-                          });
-                        },
-                      ),
-                      Checkbox(
-                        value: mission[i],
-                        onChanged: (value) {
-                          setState(() {
-                            mission[i] = value;
-                          });
-                        },
-                      ),
-                      Checkbox(
-                        value: commander[i],
-                        onChanged: (value) {
-                          setState(() {
-                            commander[i] = value;
-                          });
-                        },
-                      )
-                    ],
-                  ),
-                  Row(children: moves),
-                ],
-              ),
-            );
-          },
-        ));
+        body: play);
   }
 }
 
@@ -99,6 +114,14 @@ Color cardColor(String operation) {
     default:
       return Colors.grey;
   }
+}
+
+List<List<Widget>> initListOfLists(int count){
+  List<List<Widget>> result = new List(count);
+  for(int i = 0; i < count; i++){
+    result[i] = new List();
+  }
+  return result;
 }
 
 Column chooseOperations(bool comm, bool team, bool vote) {
