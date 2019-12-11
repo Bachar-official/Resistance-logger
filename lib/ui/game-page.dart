@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:resistance_log/app/player.dart';
+import 'package:resistance_log/app/round.dart';
 import 'package:resistance_log/ui/game-progress.dart';
 
 class GamePage extends StatefulWidget {
@@ -19,13 +20,18 @@ List<String> getNames(Box box) {
 List<Player> setPlayersList(List<String> list) {
   List<Player> result = new List();
   for (int i = 0; i < list.length; i++) {
-    result.add(new Player(list[i]));
+    result.add(new Player.withName(list[i]));
   }
   return result;
 }
 
+GameRound newRound(List<Player> players, OperationResult result) {
+  return new GameRound.withList(players, result);
+}
+
 class _GamePageState extends State<GamePage> {
-  static Box playerBox = Hive.box('players');
+  static Box<String> playerBox = Hive.box('players');
+  static Box<GameRound> roundBox = Hive.box('rounds');
   static List<String> playerName = getNames(playerBox);
   List<Player> players = setPlayersList(playerName);
   List<Container> playersContainer;
@@ -103,14 +109,22 @@ class _GamePageState extends State<GamePage> {
             IconButton(
                 icon: Icon(Icons.check_circle),
                 color: Colors.blue,
-                onPressed: () {}),
+                onPressed: () {
+                  roundBox.add(GameRound.withList(players, OperationResult.SUCCESS));
+                }),
             IconButton(
-                icon: Icon(Icons.cancel), color: Colors.red, onPressed: () {}),
+                icon: Icon(Icons.cancel), color: Colors.red, onPressed: () {
+                  roundBox.add(newRound(players, OperationResult.FAIL));
+                }),
             IconButton(
-                icon: Icon(Icons.cached), color: Colors.grey, onPressed: () {}),
+                icon: Icon(Icons.cached), color: Colors.grey, onPressed: () {
+                  roundBox.add(newRound(players, OperationResult.NO_VOTE));
+                }),
             IconButton(
-                icon: Icon(Icons.screen_share), onPressed: () {
-                  Navigator.pop(context, GameProgress);
+                icon: Icon(Icons.screen_share),
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => GameProgress()));
                 }),
           ],
         ),

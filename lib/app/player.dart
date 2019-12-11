@@ -1,10 +1,25 @@
-class Player{
+import 'package:hive/hive.dart';
+
+part 'player.g.dart';
+
+@HiveType()
+class Player extends HiveObject{
+
+  @HiveField(0)
   String name;
+
+  @HiveField(1)
   bool isCommander;
+
+  @HiveField(2)
   bool inTeam;
+
+  @HiveField(4)
   bool isVoted;
 
-  Player(String name){
+  Player();
+
+  Player.withName(String name){
     this.name = name;
     isCommander = false;
     inTeam = false;

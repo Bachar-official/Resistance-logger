@@ -10,7 +10,7 @@ class PlayersPage extends StatefulWidget {
 class _PlayersPageState extends State<PlayersPage> {
   List<Card> playersCard = new List();
   String player;
-  Box playersBox = Hive.box('players');
+  Box<String> playersBox = Hive.box('players');
   @override
   Widget build(BuildContext context) {
     return Scaffold(
