@@ -1,209 +1,127 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:resistance_log/app/player.dart';
+import 'package:resistance_log/ui/game-progress.dart';
 
 class GamePage extends StatefulWidget {
   @override
   _GamePageState createState() => _GamePageState();
 }
 
-class _GamePageState extends State<GamePage> {
-  static var playersBox = Hive.box('players');
-  List<String> players = _fillFromBox(playersBox);
-  List<bool> votes = createBools(playersBox.length);
-  List<bool> mission = createBools(playersBox.length);
-  List<bool> commander = createBools(playersBox.length);
-  List<List<Widget>> moves = initListOfLists(playersBox.length);
-  List<Widget> checks = new List(playersBox.length);
-  @override
-  Widget build(BuildContext context) {
-    ListView play = new ListView.builder(
-      itemCount: players.length,
-      itemBuilder: (context, i) {
-        String playerName = players[i];
-        return Card(
-          color: Colors.green,
-          child: Row(
-            children: <Widget>[
-              RotatedBox(
-                child: Text(playerName),
-                quarterTurns: -1,
-              ),
-              Column(
-                children: <Widget>[
-                  Checkbox(
-                    value: votes[i],
-                    onChanged: (value) {
-                      setState(() {
-                        votes[i] = value;
-                      });
-                    },
-                  ),
-                  Checkbox(
-                    value: mission[i],
-                    onChanged: (value) {
-                      setState(() {
-                        mission[i] = value;
-                      });
-                    },
-                  ),
-                  Checkbox(
-                    value: commander[i],
-                    onChanged: (value) {
-                      setState(() {
-                        commander[i] = value;
-                      });
-                    },
-                  )
-                ],
-              ),
-              Row(children: moves[i]),
-            ],
-          ),
-        );
-      },
-    );
-    return Scaffold(
-        appBar: AppBar(
-          title: Text("Game"),
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(Icons.check_circle),
-              color: Colors.blue,
-              onPressed: () {
-                setState(() {
-                  for(int i = 0; i < playersBox.length; i++){
-                    moves[i].add(addCard(votes[i], mission[i], commander[i], "success"));
-                  }
-                });
-              },
-            ),
-            IconButton(
-              icon: Icon(Icons.cancel),
-              color: Colors.red,
-              onPressed: () {
-                setState(() {
-                  for(int i = 0; i < playersBox.length; i++){
-                    moves[i].add(addCard(votes[i], mission[i], commander[i], "fail"));
-                  }
-                });
-              },
-            ),
-            IconButton(
-              icon: Icon(Icons.cached),
-              color: Colors.grey,
-              onPressed: () {
-                setState(() {
-                  for(int i = 0; i < playersBox.length; i++){
-                    moves[i].add(addCard(votes[i], mission[i], commander[i], "whatever"));
-                  }
-                });
-              },
-            ),
-          ],
-        ),
-        body: play);
-  }
-}
-
-Color cardColor(String operation) {
-  switch (operation) {
-    case "success":
-      return Colors.blue;
-    case "fail":
-      return Colors.red;
-    default:
-      return Colors.grey;
-  }
-}
-
-List<List<Widget>> initListOfLists(int count){
-  List<List<Widget>> result = new List(count);
-  for(int i = 0; i < count; i++){
-    result[i] = new List();
-  }
-  return result;
-}
-
-Column chooseOperations(bool comm, bool team, bool vote) {
-  Column beenAndPro =
-      Column(children: <Widget>[Icon(Icons.mood), Icon(Icons.check)]);
-  Column beenAndContra =
-      Column(children: <Widget>[Icon(Icons.mood), Icon(Icons.clear)]);
-  Column notBeenAndPro =
-      Column(children: <Widget>[Icon(Icons.mood_bad), Icon(Icons.check)]);
-  Column notBeenAndContra =
-      Column(children: <Widget>[Icon(Icons.mood_bad), Icon(Icons.clear)]);
-  Column commBeenAndPro = Column(children: <Widget>[
-    Icon(Icons.business_center),
-    Icon(Icons.mood),
-    Icon(Icons.check)
-  ]);
-  Column commBeenAndContra = Column(children: <Widget>[
-    Icon(Icons.business_center),
-    Icon(Icons.mood),
-    Icon(Icons.clear)
-  ]);
-  Column commNotBeenAndPro = Column(children: <Widget>[
-    Icon(Icons.business_center),
-    Icon(Icons.mood_bad),
-    Icon(Icons.check)
-  ]);
-  Column commNotBeenAndContra = Column(children: <Widget>[
-    Icon(Icons.business_center),
-    Icon(Icons.mood_bad),
-    Icon(Icons.clear)
-  ]);
-  if (comm && team && vote)
-    return commBeenAndPro;
-  else if (comm && team && !vote)
-    return commBeenAndContra;
-  else if (comm && !team && vote)
-    return commNotBeenAndPro;
-  else if (comm && !team && !vote)
-    return commNotBeenAndContra;
-  else if (!comm && team && vote)
-    return beenAndPro;
-  else if (!comm && team && !vote)
-    return beenAndContra;
-  else if (!comm && !team && vote)
-    return notBeenAndPro;
-  else
-    return notBeenAndContra;
-}
-
-Card addCard(bool comm, bool team, bool vote, String operation) {
-  return Card(
-      color: cardColor(operation), child: chooseOperations(comm, team, vote));
-}
-
-List<bool> createBools(int length) {
-  List<bool> result = new List(length);
-  for (int i = 0; i < length; i++) {
-    result[i] = false;
-  }
-  return result;
-}
-
-List<String> _fillFromBox(var box) {
+List<String> getNames(Box box) {
   List<String> result = new List();
   for (int i = 0; i < box.length; i++) {
     result.add(box.getAt(i) as String);
   }
   return result;
 }
-/*
-child: Column(children: <Widget>[
-      RaisedButton(color: Colors.red, child: Text("Fail"), onPressed: () {},),
-      RaisedButton(color: Colors.blue, child: Text("Success"), onPressed: () {},),
-      RaisedButton(color: Colors.grey, child: Text("Not accepted"), onPressed: () {},),
-      Container(child: ListView.builder(
-        itemCount: playersBox.length,
-        itemBuilder: (context, index){
-          String playerName = playersBox.getAt(index) as String;
-          return ListTile(
-            title: Text(playerName),
-          );
-        },
-      ),)
-    ],),
-*/
+
+List<Player> setPlayersList(List<String> list) {
+  List<Player> result = new List();
+  for (int i = 0; i < list.length; i++) {
+    result.add(new Player(list[i]));
+  }
+  return result;
+}
+
+class _GamePageState extends State<GamePage> {
+  static Box playerBox = Hive.box('players');
+  static List<String> playerName = getNames(playerBox);
+  List<Player> players = setPlayersList(playerName);
+  List<Container> playersContainer;
+
+  Container buildContainer(Player player) {
+    return Container(
+      padding: const EdgeInsets.all(5),
+      child: Column(
+        children: <Widget>[
+          Text(player.getName()),
+          Row(
+            children: <Widget>[
+              Column(
+                children: <Widget>[
+                  Icon(Icons.verified_user),
+                  Checkbox(
+                    value: player.isCommander,
+                    onChanged: (value) {
+                      setState(() {
+                        player.isCommander = value;
+                      });
+                    },
+                  )
+                ],
+              ),
+              Column(
+                children: <Widget>[
+                  Icon(Icons.group),
+                  Checkbox(
+                    value: player.inTeam,
+                    onChanged: (value) {
+                      setState(() {
+                        player.inTeam = value;
+                      });
+                    },
+                  )
+                ],
+              ),
+              Column(
+                children: <Widget>[
+                  Icon(Icons.check),
+                  Checkbox(
+                    value: player.isVoted,
+                    onChanged: (value) {
+                      setState(() {
+                        player.isVoted = value;
+                      });
+                    },
+                  )
+                ],
+              )
+            ],
+          ),
+        ],
+      ),
+      color: Colors.green,
+    );
+  }
+
+  List<Container> fillContainerList(List<Player> players) {
+    List<Container> result = new List();
+    for (int i = 0; i < players.length; i++) {
+      result.add(buildContainer(players[i]));
+    }
+    return result;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    playersContainer = fillContainerList(players);
+    return Scaffold(
+        appBar: AppBar(
+          title: Text("Game"),
+          actions: <Widget>[
+            IconButton(
+                icon: Icon(Icons.check_circle),
+                color: Colors.blue,
+                onPressed: () {}),
+            IconButton(
+                icon: Icon(Icons.cancel), color: Colors.red, onPressed: () {}),
+            IconButton(
+                icon: Icon(Icons.cached), color: Colors.grey, onPressed: () {}),
+            IconButton(
+                icon: Icon(Icons.screen_share), onPressed: () {
+                  Navigator.pop(context, GameProgress);
+                }),
+          ],
+        ),
+        body: GridView.count(
+          primary: false,
+          padding: const EdgeInsets.all(20),
+          childAspectRatio: 1.5,
+          crossAxisSpacing: 10,
+          mainAxisSpacing: 10,
+          crossAxisCount: 2,
+          children: playersContainer,
+        ));
+  }
+}
