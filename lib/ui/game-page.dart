@@ -15,18 +15,38 @@ class _GamePageState extends State<GamePage> {
   static List<String> playerName = Operations.getNames(playerBox);
   List<Container> playersContainer;
   List<Player> players = Operations.setPlayersList(playerName);
-
+  int _selected = 0;
   List<Container> fillContainerList(List<Player> players) {
     List<Container> result = new List();
     for (int i = 0; i < players.length; i++) {
-      result.add(buildContainer(players[i]));
+      result.add(buildContainer(players[i], i));
     }
     return result;
   }
 
-  Container buildContainer(Player player) {
+  void setPlayerToCommander(int index){
+    for(int i = 0; i < players.length; i++){
+      if(i == index){
+        players[i].setCommander(true);
+      }
+      else {
+        players[i].setCommander(false);
+      }
+    }
+  }
+
+  void onChanged(int value) {
+    setState(() {
+      _selected = value;
+    });
+  }
+
+  Container buildContainer(Player player, int index) {
+    if(index == 0){
+      player.setCommander(true);
+    }
     return Container(
-      padding: const EdgeInsets.all(5),
+      padding: const EdgeInsets.all(2),
       child: Column(
         children: <Widget>[
           Text(player.getName()),
@@ -35,40 +55,48 @@ class _GamePageState extends State<GamePage> {
               Column(
                 children: <Widget>[
                   Icon(Icons.verified_user),
-                  Checkbox(
-                    value: player.getCommander(),
-                    onChanged: (value) {
+                  Radio(
+                    value: index,
+                    groupValue: _selected,
+                    onChanged: (int value) {
                       setState(() {
-                        player.isCommander = value;
+                        _selected = value;
                       });
+                      setPlayerToCommander(_selected);
                     },
-                  )
+                  ),
                 ],
               ),
               Column(
                 children: <Widget>[
                   Icon(Icons.group),
-                  Checkbox(
-                    value: player.getTeam(),
-                    onChanged: (value) {
-                      setState(() {
-                        player.inTeam = value;
-                      });
-                    },
-                  )
+                  RotatedBox(
+                    quarterTurns: -1,
+                    child: Switch(
+                      value: player.getTeam(),
+                      onChanged: (value) {
+                        setState(() {
+                          player.setTeam(value);
+                        });
+                      },
+                    ),
+                  ),
                 ],
               ),
               Column(
                 children: <Widget>[
                   Icon(Icons.check),
-                  Checkbox(
-                    value: player.getVote(),
-                    onChanged: (value) {
-                      setState(() {
-                        player.isVoted = value;
-                      });
-                    },
-                  )
+                  RotatedBox(
+                    quarterTurns: -1,
+                    child: Switch(
+                      value: player.getVote(),
+                      onChanged: (value) {
+                        setState(() {
+                          player.setVote(value);
+                        });
+                      },
+                    ),
+                  ),
                 ],
               )
             ],

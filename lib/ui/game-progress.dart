@@ -11,20 +11,28 @@ class _GameProgressState extends State<GameProgress> {
   @override
   Widget build(BuildContext context) {
     List<GameRound> rounds = Operations.getList();
-    List<DataRow> rows = Operations.roundRow(rounds);
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Rounds"),
-      ),
-      body: SingleChildScrollView(
-        scrollDirection: Axis.vertical,
-        child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: DataTable(
-              columns: Operations.getNamesFromRounds(rounds),
-              rows: rows,
-            )),
-      ),
-    );
+    if (rounds.length == 0) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text("No rounds yet!"),
+        ),
+      );
+    } else {
+      List<DataRow> dataRows = Operations.roundRow(rounds);
+      return Scaffold(
+        appBar: AppBar(
+          title: Text("Rounds"),
+        ),
+        body: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: DataTable(
+                columns: Operations.getNamesFromRounds(rounds),
+                rows: dataRows,
+              )),
+        ),
+      );
+    }
   }
 }
