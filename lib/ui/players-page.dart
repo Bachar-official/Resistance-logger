@@ -11,6 +11,7 @@ class _PlayersPageState extends State<PlayersPage> {
   List<Card> playersCard = new List();
   String player;
   Box<String> playersBox = Hive.box('players');
+  bool _isButtonDisabled = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,17 +19,9 @@ class _PlayersPageState extends State<PlayersPage> {
           title: Text("Lobby"),
           actions: <Widget>[
             IconButton(
-              icon: Icon(Icons.delete),
-              onPressed: () {
-                playersBox.clear();
-                setState(() {
-                  playersCard.clear();
-                });
-              },
-            ),
-            IconButton(
               icon: Icon(Icons.games),
               onPressed: () {
+                _isButtonDisabled = true;
                 Navigator.pushNamed(context, Router.gamePage);
               },
             )
@@ -42,7 +35,7 @@ class _PlayersPageState extends State<PlayersPage> {
               },
             ),
             RaisedButton(
-              onPressed: () {
+              onPressed: _isButtonDisabled ? null : () {
                 playersBox.add(player);
                 setState(() {
                   playersCard.add(Card(

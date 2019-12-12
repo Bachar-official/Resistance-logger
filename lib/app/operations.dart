@@ -75,7 +75,7 @@ class Operations {
       child: Row(
         children: <Widget>[
           if (player.getCommander()) Icon(Icons.verified_user),
-          if (player.getTeam()) Icon(Icons.mood) else Icon(Icons.mood_bad),
+          if (player.getTeam()) Icon(Icons.mood),
           if (player.getVote()) Icon(Icons.check) else Icon(Icons.clear),
         ],
       ),
