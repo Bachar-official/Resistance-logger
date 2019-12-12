@@ -30,9 +30,27 @@ class Player extends HiveObject{
     return this.name;
   }
 
-  void setRound(bool commander, bool team, bool vote){
-    isCommander = commander;
-    inTeam = team;
-    isVoted = vote;
+  void setCommander(bool comm){
+    this.isCommander = comm;
+  }
+
+  void setTeam(bool team){
+    this.inTeam = team;
+  }
+
+  void setVote(bool vote){
+    this.isVoted = vote;
+  }
+
+  bool getCommander(){
+    return this.isCommander;
+  }
+
+  bool getTeam(){
+    return this.inTeam;
+  }
+
+  bool getVote(){
+    return this.isVoted;
   }
 }

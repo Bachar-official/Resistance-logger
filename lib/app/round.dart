@@ -31,4 +31,24 @@ class GameRound extends HiveObject{
     this.players = players;
     this.result = result;
   }
+
+  List<Player> getPlayers(){
+    return this.players;
+  }
+
+  OperationResult getResult(){
+    return this.result;
+  }
+
+  bool getPlayerCommaner(int index){
+    return players[index].isCommander;
+  }
+
+  bool getPlayerTeam(int index){
+    return players[index].inTeam;
+  }
+
+  bool getPlayerVote(int index){
+    return players[index].isVoted;
+  }
 }
