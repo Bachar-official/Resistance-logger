@@ -40,6 +40,14 @@ class _GamePageState extends State<GamePage> {
     });
   }
 
+  @override
+  void initState(){
+    setState(() {
+      onChanged(_selected);
+    });
+    setPlayerToCommander(_selected);
+  }
+
   Container buildContainer(Player player, int index) {
     return Container(
       padding: const EdgeInsets.all(2),

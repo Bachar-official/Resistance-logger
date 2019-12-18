@@ -12,6 +12,8 @@ class _PlayersPageState extends State<PlayersPage> {
   String player;
   Box<String> playersBox = Hive.box('players');
   bool _isButtonDisabled = false;
+  final playerController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,6 +32,7 @@ class _PlayersPageState extends State<PlayersPage> {
         body: Column(
           children: <Widget>[
             TextField(
+              controller: playerController,
               onChanged: (text) {
                 if (text.length > 0) player = text;
               },
@@ -47,6 +50,7 @@ class _PlayersPageState extends State<PlayersPage> {
                           style: TextStyle(fontSize: 20),
                         ),
                       )));
+                      playerController.clear();
                 });
               },
               child: Text("Add player"),
