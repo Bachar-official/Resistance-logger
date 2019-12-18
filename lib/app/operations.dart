@@ -91,9 +91,7 @@ class Operations {
           children: <Widget>[
             if (round.getPlayerCommaner(i)) Icon(Icons.verified_user),
             if (round.getPlayerTeam(i))
-              Icon(Icons.mood)
-            else
-              Icon(Icons.mood_bad),
+              Icon(Icons.group),
             if (round.getPlayerVote(i))
               Icon(Icons.check)
             else
