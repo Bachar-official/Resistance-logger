@@ -24,12 +24,11 @@ class _GamePageState extends State<GamePage> {
     return result;
   }
 
-  void setPlayerToCommander(int index){
-    for(int i = 0; i < players.length; i++){
-      if(i == index){
+  void setPlayerToCommander(int index) {
+    for (int i = 0; i < players.length; i++) {
+      if (i == index) {
         players[i].setCommander(true);
-      }
-      else {
+      } else {
         players[i].setCommander(false);
       }
     }
@@ -42,9 +41,6 @@ class _GamePageState extends State<GamePage> {
   }
 
   Container buildContainer(Player player, int index) {
-    if(index == 0){
-      player.setCommander(true);
-    }
     return Container(
       padding: const EdgeInsets.all(2),
       child: Column(
@@ -60,7 +56,7 @@ class _GamePageState extends State<GamePage> {
                     groupValue: _selected,
                     onChanged: (int value) {
                       setState(() {
-                        _selected = value;
+                        onChanged(value);
                       });
                       setPlayerToCommander(_selected);
                     },

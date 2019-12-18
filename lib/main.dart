@@ -6,6 +6,7 @@ import 'package:resistance_log/app/round.dart';
 import 'app/app.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   final appDocumentDir = await path_provider.getApplicationDocumentsDirectory();
   Hive.init(appDocumentDir.path);
   Hive.registerAdapter(PlayerAdapter(), 0);
