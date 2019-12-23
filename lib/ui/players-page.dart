@@ -10,12 +10,20 @@ class PlayersPage extends StatefulWidget {
 }
 
 class _PlayersPageState extends State<PlayersPage> {
-  Box<Player> playerBox = Hive.box('players');
-  bool isGameNotStarted = false;
-  String playerName = "";
-  Color currentColor = Colors.green;
+  Box<Player> playerBox;
+  bool isGameNotStarted;
+  String playerName;
+  Color currentColor;
   final playerController = TextEditingController();
-  int selected = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    playerBox = Hive.box('players');
+    isGameNotStarted = false;
+    playerName = "";
+    currentColor = Colors.green;
+  }
 
   showColorPicker() {
     showDialog(
@@ -103,19 +111,20 @@ class _PlayersPageState extends State<PlayersPage> {
                     });
                   },
                 ),
+                IconButton(
+                  icon: Icon(Icons.add),
+                  onPressed: isGameNotStarted
+                      ? null
+                      : () {
+                          setState(() {
+                            playerController.clear();
+                            playerBox.add(Player.withNameAndColor(
+                                playerName, currentColor));
+                          });
+                        },
+                )
               ],
             ),
-            RaisedButton(
-                child: Text('Add player'),
-                onPressed: isGameNotStarted
-                    ? null
-                    : () {
-                        setState(() {
-                          playerController.clear();
-                          playerBox.add(Player.withNameAndColor(
-                              playerName, currentColor));
-                        });
-                      }),
             Expanded(
               child: ListView.builder(
                   itemCount: playerBox.length,

@@ -11,14 +11,28 @@ class GamePage extends StatefulWidget {
 }
 
 class _GamePageState extends State<GamePage> {
-  List<Player> players = Operations.getListFromBox();
+  Box<Round> roundsBox;
+  List<Player> players;
   List<Container> playersContainer;
-  int selected = 0;
+  int selected;
 
-  List<Container> fillPlayersContainer(List<Player> playerList) {
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      onChanged(selected);
+      roundsBox = Hive.box('rounds');
+      players = Operations.getListFromBox();
+      playersContainer = fillPlayersContainer();
+      selected = 0;
+    });
+    setPlayerToCommander(selected);
+  }
+
+  List<Container> fillPlayersContainer() {
     List<Container> result = new List();
-    for (int i = 0; i < playerList.length; i++) {
-      result.add(drawPlayerContainer(playerList[i], i));
+    for (int i = 0; i < players.length; i++) {
+      result.add(drawPlayerContainer(players[i], i));
     }
     return result;
   }
@@ -36,14 +50,6 @@ class _GamePageState extends State<GamePage> {
   void onChanged(int value) {
     setState(() {
       selected = value;
-    });
-  }
-
-  @override
-  void initState() {
-    setState(() {
-      onChanged(selected);
-      setPlayerToCommander(selected);
     });
   }
 
@@ -112,10 +118,6 @@ class _GamePageState extends State<GamePage> {
 
   @override
   Widget build(BuildContext context) {
-    players.clear();
-    players = Operations.getListFromBox();
-    Box<Round> roundsBox = Hive.box('rounds');
-    playersContainer = fillPlayersContainer(players);
     return Scaffold(
       appBar: AppBar(
         title: Text('R-d ' + (roundsBox.length + 1).toString()),
@@ -134,7 +136,9 @@ class _GamePageState extends State<GamePage> {
             icon: Icon(Icons.cancel),
             color: Colors.red,
             onPressed: () {
-              roundsBox.add(Round.advanced(players, OperationResult.FAIL));
+              setState(() {
+                roundsBox.add(Round.advanced(players, OperationResult.FAIL));
+              });
               Navigator.popAndPushNamed(context, Router.gamePage);
             },
           ),
@@ -142,7 +146,9 @@ class _GamePageState extends State<GamePage> {
             icon: Icon(Icons.cached),
             color: Colors.grey,
             onPressed: () {
-              roundsBox.add(Round.advanced(players, OperationResult.NO_VOTE));
+              setState(() {
+                roundsBox.add(Round.advanced(players, OperationResult.NO_VOTE));
+              });
               Navigator.popAndPushNamed(context, Router.gamePage);
             },
           ),

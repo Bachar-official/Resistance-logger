@@ -9,7 +9,15 @@ class GameProgressPage extends StatefulWidget{
 }
 
 class _GameProgressState extends State<GameProgressPage>{
-  List<Round> roundList = Operations.getRoundListFromBox();
+  List<Round> roundList;
+
+  @override
+  void initState(){
+    super.initState();
+    setState(() {
+      roundList = Operations.getRoundListFromBox();
+    });
+  }
 
   @override
   Widget build(BuildContext context){
