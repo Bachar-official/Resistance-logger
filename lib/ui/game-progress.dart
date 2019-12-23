@@ -9,11 +9,11 @@ class GameProgressPage extends StatefulWidget{
 }
 
 class _GameProgressState extends State<GameProgressPage>{
-  Box<Round> roundsBox = Hive.box('rounds');
+  List<Round> roundList = Operations.getRoundListFromBox();
 
   @override
   Widget build(BuildContext context){
-    if(roundsBox.length == 0){
+    if(roundList.length == 0){
       return Scaffold(
         appBar: AppBar(
           title: Text('There is no rounds yet!'),
@@ -30,8 +30,8 @@ class _GameProgressState extends State<GameProgressPage>{
           child: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
               child: DataTable(
-                columns: Operations.getColumnsFromBox(roundsBox),
-                rows: Operations.roundRows(roundsBox),
+                columns: Operations.getColumnsFromBox(roundList),
+                rows: Operations.roundRows(roundList),
               ),
           ),
         )

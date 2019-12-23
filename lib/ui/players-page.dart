@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/block_picker.dart';
 import 'package:hive/hive.dart';
-import 'package:logger_for_resistance/app/operations.dart';
 import 'package:logger_for_resistance/app/routing.dart';
 import 'package:logger_for_resistance/entity/player.dart';
 
@@ -17,74 +16,6 @@ class _PlayersPageState extends State<PlayersPage> {
   Color currentColor = Colors.green;
   final playerController = TextEditingController();
   int selected = 0;
-
-  List<Container> playersContainer() {
-    List<Container> result = new List();
-    for (int i = 0; i < playerBox.length; i++) {
-      result.add(drawPlayerContainer(playerBox.getAt(i), i));
-    }
-    return result;
-  }
-
-  Container drawPlayerContainer(Player player, int index) {
-    return Container(
-      color: player.getColor(),
-      padding: const EdgeInsets.all(2),
-      child: Column(
-        children: <Widget>[
-          Text(player.getName()),
-          Row(
-            children: <Widget>[
-              Column(
-                children: <Widget>[
-                  Icon(Icons.verified_user),
-                  Radio(
-                    value: index,
-                    groupValue: selected,
-                    onChanged: (value) {
-                      if (index == selected) {
-                        setState(() {
-                          player.setCommander(true);
-                        });
-                      }
-                    },
-                  ),
-                ],
-              ),
-              Column(
-                children: <Widget>[
-                  Icon(Icons.group),
-                  RotatedBox(
-                    quarterTurns: -1,
-                    child: Switch(
-                      value: player.getTeam(),
-                      onChanged: (value) {
-                        player.setTeam(value);
-                      },
-                    ),
-                  )
-                ],
-              ),
-              Column(
-                children: <Widget>[
-                  Icon(Icons.check),
-                  RotatedBox(
-                    quarterTurns: -1,
-                    child: Switch(
-                      value: player.getVote(),
-                      onChanged: (value) {
-                        player.setVote(value);
-                      },
-                    ),
-                  )
-                ],
-              )
-            ],
-          ),
-        ],
-      ),
-    );
-  }
 
   showColorPicker() {
     showDialog(
@@ -180,6 +111,7 @@ class _PlayersPageState extends State<PlayersPage> {
                     ? null
                     : () {
                         setState(() {
+                          playerController.clear();
                           playerBox.add(Player.withNameAndColor(
                               playerName, currentColor));
                         });

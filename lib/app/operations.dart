@@ -1,10 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_colorpicker/block_picker.dart';
 import 'package:hive/hive.dart';
 import 'package:logger_for_resistance/entity/player.dart';
 import 'package:logger_for_resistance/entity/round.dart';
 
 class Operations {
+
+  static List<Player> getListFromBox(){
+    List<Player> result = new List();
+    Box<Player> playerBox = Hive.box('players');
+    for(int i = 0; i < playerBox.length; i++){
+      result.add(playerBox.getAt(i));
+    }
+    return result;
+  }
 
   static Card drawPlayerCard(Player player) {
     return Card(
@@ -27,71 +35,6 @@ class Operations {
     return result;
   }
 
-  static Container drawPlayerContainer(Player player, int index, int selected) {
-    return Container(
-      color: player.getColor(),
-      padding: const EdgeInsets.all(2),
-      child: Column(
-        children: <Widget>[
-          Text(player.getName()),
-          Row(
-            children: <Widget>[
-              Column(
-                children: <Widget>[
-                  Icon(Icons.verified_user),
-                  Radio(
-                    value: index,
-                    groupValue: selected,
-                    onChanged: (value) {
-                      if (index == selected) {
-                        player.setCommander(true);
-                      }
-                    },
-                  ),
-                ],
-              ),
-              Column(
-                children: <Widget>[
-                  Icon(Icons.group),
-                  RotatedBox(
-                    quarterTurns: -1,
-                    child: Switch(
-                      value: player.getTeam(),
-                      onChanged: (value) {
-                        player.setTeam(value);
-                      },
-                    ),
-                  )
-                ],
-              ),
-              Column(
-                children: <Widget>[
-                  Icon(Icons.check),
-                  RotatedBox(
-                    quarterTurns: -1,
-                    child: Switch(
-                      value: player.getVote(),
-                      onChanged: (value) {
-                        player.setVote(value);
-                      },
-                    ),
-                  )
-                ],
-              )
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  static List<Container> playersContainer(Box<Player> players, int selected) {
-    List<Container> result = new List();
-    for (int i = 0; i < players.length; i++) {
-      result.add(drawPlayerContainer(players.getAt(i), i, selected));
-    }
-    return result;
-  }
 
   static List<Player> listFromBox(Box<Player> box) {
     List<Player> result = new List();
@@ -101,24 +44,24 @@ class Operations {
     return result;
   }
 
-  static List<DataColumn> getColumnsFromBox(Box<Round> roundBox){
+  static List<DataColumn> getColumnsFromBox(List<Round> roundList){
     List<DataColumn> result = new List();
-    for(int i = 0; i < roundBox.getAt(0).getPlayersCount(); i++){
-      result.add(new DataColumn(label: Text(roundBox.getAt(0).getPlayers()[i].getName())));
+    for(int i = 0; i < roundList[0].getPlayersCount(); i++){
+      result.add(new DataColumn(label: Text(roundList[0].getPlayers()[i].getName())));
     }
     return result;
   }
 
-  static DataRow drawCurrentRound(Box<Round> roundBox, int index) {
+  static DataRow drawCurrentRound(List<Round> roundBox, int index) {
     return DataRow(
-      cells: drawRoundResult(roundBox.getAt(index)),
+      cells: drawRoundResult(roundBox[index]),
     );
   }
 
-  static List<DataRow> roundRows(Box<Round> roundBox) {
+  static List<DataRow> roundRows(List<Round> roundList) {
     List<DataRow> result = new List();
-    for (int i = 0; i < roundBox.length; i++) {
-      result.add(drawCurrentRound(roundBox, i));
+    for (int i = 0; i < roundList.length; i++) {
+      result.add(drawCurrentRound(roundList, i));
     }
     return result;
   }
@@ -158,5 +101,14 @@ class Operations {
       default:
         return Colors.grey;
     }
+  }
+
+  static List<Round> getRoundListFromBox(){
+    Box<Round> box = Hive.box('rounds');
+    List<Round> result = new List();
+    for(int i = 0; i < box.length; i++){
+      result.add(box.getAt(i));
+    }
+    return result;
   }
 }
