@@ -5,8 +5,6 @@ import 'package:resistance_log/app/player.dart';
 import 'package:resistance_log/app/round.dart';
 import 'package:resistance_log/app/routing.dart';
 
-import '../app/operations.dart';
-
 class GamePage extends StatefulWidget {
   @override
   _GamePageState createState() => _GamePageState();
@@ -44,6 +42,7 @@ class _GamePageState extends State<GamePage> {
 
   @override
   void initState(){
+    super.initState();
     setState(() {
       onChanged(_selected);
     });
