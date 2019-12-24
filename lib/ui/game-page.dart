@@ -5,6 +5,8 @@ import 'package:resistance_log/app/player.dart';
 import 'package:resistance_log/app/round.dart';
 import 'package:resistance_log/app/routing.dart';
 
+import '../app/operations.dart';
+
 class GamePage extends StatefulWidget {
   @override
   _GamePageState createState() => _GamePageState();
@@ -14,7 +16,7 @@ class _GamePageState extends State<GamePage> {
   static Box<String> playerBox = Hive.box('players');
   static List<String> playerName = Operations.getNames(playerBox);
   List<Container> playersContainer;
-  List<Player> players = Operations.setPlayersList(playerName);
+  List<Player> players = Operations.setPlayersList();
   int _selected = 0;
   List<Container> fillContainerList(List<Player> players) {
     List<Container> result = new List();
@@ -107,7 +109,7 @@ class _GamePageState extends State<GamePage> {
           ),
         ],
       ),
-      color: Colors.green,
+      color: player.getColor(),
     );
   }
 
@@ -117,7 +119,7 @@ class _GamePageState extends State<GamePage> {
     playersContainer = fillContainerList(players);
     return Scaffold(
         appBar: AppBar(
-          title: Text("Game"),
+          title: Text("R-d " + Operations.getRoundsCount().toString()),
           actions: <Widget>[
             IconButton(
                 icon: Icon(Icons.check_circle),

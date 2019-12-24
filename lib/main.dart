@@ -14,6 +14,8 @@ void main() async {
   Hive.registerAdapter(OperationResultAdapter(), 2);
   Box<String> playersBox = await Hive.openBox('players');
   Box<GameRound> roundsBox = await Hive.openBox('rounds');
+  Box<Player> players = await Hive.openBox('players-box');
+  players.clear();
   playersBox.clear();
   roundsBox.clear();
   runApp(App());

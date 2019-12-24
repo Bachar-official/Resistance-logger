@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_colorpicker/block_picker.dart';
 import 'package:hive/hive.dart';
+import 'package:resistance_log/app/player.dart';
 import 'package:resistance_log/app/routing.dart';
 
 class PlayersPage extends StatefulWidget {
@@ -10,10 +12,52 @@ class PlayersPage extends StatefulWidget {
 class _PlayersPageState extends State<PlayersPage> {
   List<Card> playersCard = new List();
   String player;
-  Box<String> playersBox = Hive.box('players');
+  Box<Player> playersBox = Hive.box('players-box');
   bool _isButtonDisabled = false;
   final playerController = TextEditingController();
+  Color currentColor = Colors.green;
 
+  showColorPicker() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Choose color'),
+            actions: <Widget>[
+              FlatButton(
+                child: Text('OK'),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+            content: SingleChildScrollView(
+              child: BlockPicker(
+                pickerColor: currentColor,
+                onColorChanged: (color) {
+                  setState(() {
+                    currentColor = color;
+                  });
+                },
+              ),
+            ),
+          );
+        });
+  }
+
+  Card drawPlayerCard(Player player) {
+    return Card(
+      color: player.getColor(),
+      child: Align(
+        alignment: Alignment.center,
+        child: Text(
+          player.getName(),
+          style: TextStyle(fontSize: 20),
+        ),
+      ),
+    );
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,29 +75,35 @@ class _PlayersPageState extends State<PlayersPage> {
         ),
         body: Column(
           children: <Widget>[
-            TextField(
-              controller: playerController,
-              onChanged: (text) {
-                if (text.length > 0) player = text;
-              },
-            ),
-            RaisedButton(
-              onPressed: _isButtonDisabled ? null : () {
-                playersBox.add(player);
-                setState(() {
-                  playersCard.add(Card(
-                      color: Colors.green,
-                      child: Align(
-                        alignment: Alignment.center,
-                        child: Text(
-                          player,
-                          style: TextStyle(fontSize: 20),
-                        ),
-                      )));
-                      playerController.clear();
-                });
-              },
-              child: Text("Add player"),
+            Row(
+              children: <Widget>[
+                Flexible(
+                  child: TextField(
+                    controller: playerController,
+                    onChanged: (text) {
+                      if (text.length > 0) player = text;
+                    },
+                  ),
+                ),
+                IconButton(
+                  icon: Icon(Icons.border_color),
+                  color: currentColor,
+                  onPressed: showColorPicker,
+                ),
+                IconButton(
+                  icon: Icon(Icons.add),
+                  onPressed: _isButtonDisabled
+                      ? null
+                      : () {
+                          playersBox.add(
+                              Player.withNameAndColor(player, currentColor));
+                          setState(() {
+                            playersCard.add(drawPlayerCard(Player.withNameAndColor(player, currentColor)));
+                            playerController.clear();
+                          });
+                        },
+                ),
+              ],
             ),
             if (playersCard.length > 0)
               Expanded(

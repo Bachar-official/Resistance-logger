@@ -17,13 +17,14 @@ class PlayerAdapter extends TypeAdapter<Player> {
       ..name = fields[0] as String
       ..isCommander = fields[1] as bool
       ..inTeam = fields[2] as bool
-      ..isVoted = fields[4] as bool;
+      ..isVoted = fields[4] as bool
+      ..color = fields[5] as String;
   }
 
   @override
   void write(BinaryWriter writer, Player obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(5)
       ..writeByte(0)
       ..write(obj.name)
       ..writeByte(1)
@@ -31,6 +32,8 @@ class PlayerAdapter extends TypeAdapter<Player> {
       ..writeByte(2)
       ..write(obj.inTeam)
       ..writeByte(4)
-      ..write(obj.isVoted);
+      ..write(obj.isVoted)
+      ..writeByte(5)
+      ..write(obj.color);
   }
 }

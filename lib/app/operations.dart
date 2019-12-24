@@ -16,10 +16,11 @@ class Operations {
     return new GameRound.withList(players, result);
   }
 
-  static List<Player> setPlayersList(List<String> list) {
+  static List<Player> setPlayersList() {
+    Box<Player> box = Hive.box('players-box');
     List<Player> result = new List();
-    for (int i = 0; i < list.length; i++) {
-      result.add(new Player.withName(list[i]));
+    for (int i = 0; i < box.length; i++) {
+      result.add(new Player.withNameAndColor(box.getAt(i).getName(), box.getAt(i).getColor()));
     }
     return result;
   }
@@ -46,6 +47,11 @@ class Operations {
     return DataRow(
       cells: roundResult(rounds[index]),
     );
+  }
+
+  static int getRoundsCount(){
+    Box<GameRound> box = Hive.box('rounds');
+    return box.length + 1;
   }
 
   static List<DataColumn> getNamesFromRounds(List<GameRound> rounds) {
@@ -90,10 +96,7 @@ class Operations {
         child: Row(
           children: <Widget>[
             if (round.getPlayerCommaner(i)) Icon(Icons.verified_user),
-            if (round.getPlayerTeam(i))
-              Icon(Icons.mood)
-            else
-              Icon(Icons.mood_bad),
+            if (round.getPlayerTeam(i)) Icon(Icons.group),
             if (round.getPlayerVote(i))
               Icon(Icons.check)
             else
