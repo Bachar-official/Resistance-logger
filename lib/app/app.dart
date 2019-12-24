@@ -1,17 +1,16 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:logger_for_resistance/app/routing.dart';
+import 'package:resistance_log/app/routing.dart';
 
 class App extends StatefulWidget{
-  @override
+  @override 
   _AppState createState() => _AppState();
 }
 
 class _AppState extends State<App>{
-  @override
+  @override 
   Widget build(BuildContext context){
     return MaterialApp(
-      title: "Resistance Logger",
+      title: 'Resistance logger',
       theme: ThemeData.dark(),
       onGenerateRoute: Router.generateRoute,
     );

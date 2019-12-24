@@ -1,50 +1,38 @@
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
-import 'package:logger_for_resistance/app/operations.dart';
-import 'package:logger_for_resistance/entity/round.dart';
+import 'package:resistance_log/app/operations.dart';
+import 'package:resistance_log/app/round.dart';
 
-class GameProgressPage extends StatefulWidget{
+class GameProgress extends StatefulWidget {
   @override
   _GameProgressState createState() => _GameProgressState();
 }
 
-class _GameProgressState extends State<GameProgressPage>{
-  List<Round> roundList;
-
+class _GameProgressState extends State<GameProgress> {
   @override
-  void initState(){
-    super.initState();
-    setState(() {
-      roundList = Operations.getRoundListFromBox();
-    });
-  }
-
-  @override
-  Widget build(BuildContext context){
-    if(roundList.length == 0){
+  Widget build(BuildContext context) {
+    List<GameRound> rounds = Operations.getList();
+    if (rounds.length == 0) {
       return Scaffold(
         appBar: AppBar(
-          title: Text('There is no rounds yet!'),
+          title: Text("No rounds yet!"),
         ),
       );
-    }
-    else{
+    } else {
+      List<DataRow> dataRows = Operations.roundRow(rounds);
       return Scaffold(
         appBar: AppBar(
-          title: Text('Game progress'),
+          title: Text("Rounds"),
         ),
         body: SingleChildScrollView(
           scrollDirection: Axis.vertical,
           child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
+              scrollDirection: Axis.horizontal,
               child: DataTable(
-                columns: Operations.getColumnsFromBox(roundList),
-                rows: Operations.roundRows(roundList),
-              ),
-          ),
-        )
+                columns: Operations.getNamesFromRounds(rounds),
+                rows: dataRows,
+              )),
+        ),
       );
     }
-
   }
 }

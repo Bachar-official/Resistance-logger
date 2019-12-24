@@ -14,11 +14,11 @@ class PlayerAdapter extends TypeAdapter<Player> {
       for (var i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Player()
-      .._name = fields[0] as String
-      .._isCommander = fields[1] as bool
-      .._isInTeam = fields[2] as bool
-      .._isVoted = fields[3] as bool
-      .._color = fields[4] as String;
+      ..name = fields[0] as String
+      ..isCommander = fields[1] as bool
+      ..inTeam = fields[2] as bool
+      ..isVoted = fields[4] as bool
+      ..color = fields[5] as String;
   }
 
   @override
@@ -26,14 +26,14 @@ class PlayerAdapter extends TypeAdapter<Player> {
     writer
       ..writeByte(5)
       ..writeByte(0)
-      ..write(obj._name)
+      ..write(obj.name)
       ..writeByte(1)
-      ..write(obj._isCommander)
+      ..write(obj.isCommander)
       ..writeByte(2)
-      ..write(obj._isInTeam)
-      ..writeByte(3)
-      ..write(obj._isVoted)
+      ..write(obj.inTeam)
       ..writeByte(4)
-      ..write(obj._color);
+      ..write(obj.isVoted)
+      ..writeByte(5)
+      ..write(obj.color);
   }
 }

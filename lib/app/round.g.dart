@@ -37,25 +37,25 @@ class OperationResultAdapter extends TypeAdapter<OperationResult> {
   }
 }
 
-class RoundAdapter extends TypeAdapter<Round> {
+class GameRoundAdapter extends TypeAdapter<GameRound> {
   @override
-  Round read(BinaryReader reader) {
+  GameRound read(BinaryReader reader) {
     var numOfFields = reader.readByte();
     var fields = <int, dynamic>{
       for (var i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return Round()
-      .._players = (fields[0] as List)?.cast<Player>()
-      .._result = fields[1] as OperationResult;
+    return GameRound()
+      ..players = (fields[0] as List)?.cast<Player>()
+      ..result = fields[1] as OperationResult;
   }
 
   @override
-  void write(BinaryWriter writer, Round obj) {
+  void write(BinaryWriter writer, GameRound obj) {
     writer
       ..writeByte(2)
       ..writeByte(0)
-      ..write(obj._players)
+      ..write(obj.players)
       ..writeByte(1)
-      ..write(obj._result);
+      ..write(obj.result);
   }
 }

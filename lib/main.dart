@@ -1,21 +1,23 @@
-
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
-import 'package:logger_for_resistance/app/app.dart';
-import 'package:logger_for_resistance/entity/player.dart';
-import 'package:logger_for_resistance/entity/round.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:path_provider/path_provider.dart' as path_provider;
+import 'package:resistance_log/app/player.dart';
+import 'package:resistance_log/app/round.dart';
+import 'app/app.dart';
 
-void main() async{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final appDir = await getApplicationDocumentsDirectory();
-  Hive.init(appDir.path);
+  final appDocumentDir = await path_provider.getApplicationDocumentsDirectory();
+  Hive.init(appDocumentDir.path);
   Hive.registerAdapter(PlayerAdapter(), 0);
-  Hive.registerAdapter(RoundAdapter(), 1);
+  Hive.registerAdapter(GameRoundAdapter(), 1);
   Hive.registerAdapter(OperationResultAdapter(), 2);
-  Box<Player> playerBox = await Hive.openBox('players');
-  Box<Round> roundBox = await Hive.openBox('rounds');
-  playerBox.clear();
-  roundBox.clear();
+  Box<String> playersBox = await Hive.openBox('players');
+  Box<GameRound> roundsBox = await Hive.openBox('rounds');
+  Box<Player> players = await Hive.openBox('players-box');
+  players.clear();
+  playersBox.clear();
+  roundsBox.clear();
   runApp(App());
 }
+//void main() => runApp(App());

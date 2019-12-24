@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/block_picker.dart';
 import 'package:hive/hive.dart';
-import 'package:logger_for_resistance/app/routing.dart';
-import 'package:logger_for_resistance/entity/player.dart';
+import 'package:resistance_log/app/player.dart';
+import 'package:resistance_log/app/routing.dart';
 
 class PlayersPage extends StatefulWidget {
   @override
@@ -10,20 +10,12 @@ class PlayersPage extends StatefulWidget {
 }
 
 class _PlayersPageState extends State<PlayersPage> {
-  Box<Player> playerBox;
-  bool isGameNotStarted;
-  String playerName;
-  Color currentColor;
+  List<Card> playersCard = new List();
+  String player;
+  Box<Player> playersBox = Hive.box('players-box');
+  bool _isButtonDisabled = false;
   final playerController = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-    playerBox = Hive.box('players');
-    isGameNotStarted = false;
-    playerName = "";
-    currentColor = Colors.green;
-  }
+  Color currentColor = Colors.green;
 
   showColorPicker() {
     showDialog(
@@ -65,32 +57,23 @@ class _PlayersPageState extends State<PlayersPage> {
       ),
     );
   }
-
-  List<Card> playersCards(Box<Player> box) {
-    List<Card> result = new List();
-    for (int i = 0; i < box.length; i++) {
-      result.add(drawPlayerCard(box.getAt(i)));
-    }
-    return result;
-  }
-
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Lobby"),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.games),
-            onPressed: () {
-              isGameNotStarted = true;
-              Navigator.pushNamed(context, Router.gamePage);
-            },
-          ),
-        ],
-      ),
-      body: Container(
-        child: Column(
+        appBar: AppBar(
+          title: Text("Lobby"),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.games),
+              onPressed: () {
+                _isButtonDisabled = true;
+                Navigator.pushNamed(context, Router.gamePage);
+              },
+            )
+          ],
+        ),
+        body: Column(
           children: <Widget>[
             Row(
               children: <Widget>[
@@ -98,43 +81,40 @@ class _PlayersPageState extends State<PlayersPage> {
                   child: TextField(
                     controller: playerController,
                     onChanged: (text) {
-                      playerName = text;
+                      if (text.length > 0) player = text;
                     },
                   ),
                 ),
                 IconButton(
-                  color: currentColor,
                   icon: Icon(Icons.border_color),
-                  onPressed: () {
-                    setState(() {
-                      showColorPicker();
-                    });
-                  },
+                  color: currentColor,
+                  onPressed: showColorPicker,
                 ),
                 IconButton(
                   icon: Icon(Icons.add),
-                  onPressed: isGameNotStarted
+                  onPressed: _isButtonDisabled
                       ? null
                       : () {
+                          playersBox.add(
+                              Player.withNameAndColor(player, currentColor));
                           setState(() {
+                            playersCard.add(drawPlayerCard(Player.withNameAndColor(player, currentColor)));
                             playerController.clear();
-                            playerBox.add(Player.withNameAndColor(
-                                playerName, currentColor));
                           });
                         },
-                )
+                ),
               ],
             ),
-            Expanded(
-              child: ListView.builder(
-                  itemCount: playerBox.length,
+            if (playersCard.length > 0)
+              Expanded(
+                child: ListView.builder(
+                  itemCount: playersBox.length,
                   itemBuilder: (context, index) {
-                    return playersCards(playerBox)[index];
-                  }),
-            ),
+                    return playersCard[index];
+                  },
+                ),
+              )
           ],
-        ),
-      ),
-    );
+        ));
   }
 }
