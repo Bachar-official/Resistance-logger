@@ -1,6 +1,6 @@
-# resistance_log
+# logger_for_resistance
 
-A new Flutter project.
+A simple Flutter project for tracking progress in &quot;Resistance&quot; table game
 
 ## Getting Started
 
