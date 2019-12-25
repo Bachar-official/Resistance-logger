@@ -4,6 +4,7 @@ import 'package:resistance_log/app/operations.dart';
 import 'package:resistance_log/app/player.dart';
 import 'package:resistance_log/app/round.dart';
 import 'package:resistance_log/app/routing.dart';
+import 'package:resistance_log/app_localizations.dart';
 
 class GamePage extends StatefulWidget {
   @override
@@ -118,7 +119,7 @@ class _GamePageState extends State<GamePage> {
     playersContainer = fillContainerList(players);
     return Scaffold(
         appBar: AppBar(
-          title: Text("R-d " + Operations.getRoundsCount().toString()),
+          title: Text(AppLocalizations.of(context).translate('round') + " " + Operations.getRoundsCount().toString()),
           actions: <Widget>[
             IconButton(
                 icon: Icon(Icons.check_circle),

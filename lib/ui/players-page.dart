@@ -3,6 +3,7 @@ import 'package:flutter_colorpicker/block_picker.dart';
 import 'package:hive/hive.dart';
 import 'package:resistance_log/app/player.dart';
 import 'package:resistance_log/app/routing.dart';
+import 'package:resistance_log/app_localizations.dart';
 
 class PlayersPage extends StatefulWidget {
   @override
@@ -23,7 +24,7 @@ class _PlayersPageState extends State<PlayersPage> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('Choose color'),
+            title: Text(AppLocalizations.of(context).translate('color')),
             actions: <Widget>[
               FlatButton(
                 child: Text('OK'),
@@ -77,7 +78,7 @@ class _PlayersPageState extends State<PlayersPage> {
                 },
         ),
         appBar: AppBar(
-          title: Text("Lobby"),
+          title: Text(AppLocalizations.of(context).translate('lobby')),
           actions: <Widget>[
             IconButton(
               icon: Icon(Icons.games),
@@ -85,7 +86,7 @@ class _PlayersPageState extends State<PlayersPage> {
                 if (playersBox.length < 3) {
                   globalKey.currentState.showSnackBar(SnackBar(
                     backgroundColor: Colors.red,
-                    content: Text('You must have at least 3 players!'),
+                    content: Text(AppLocalizations.of(context).translate('small_lobby')),
                   ));
                 } else {
                   _isButtonDisabled = true;
