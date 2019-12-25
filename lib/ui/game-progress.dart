@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:resistance_log/app/operations.dart';
 import 'package:resistance_log/app/round.dart';
+import 'package:resistance_log/app_localizations.dart';
 
 class GameProgress extends StatefulWidget {
   @override
@@ -14,7 +15,7 @@ class _GameProgressState extends State<GameProgress> {
     if (rounds.length == 0) {
       return Scaffold(
         appBar: AppBar(
-          title: Text("No rounds yet!"),
+          title: Text(AppLocalizations.of(context).translate('no_rounds')),
         ),
       );
     } else {

@@ -3,6 +3,7 @@ import 'package:flutter_colorpicker/block_picker.dart';
 import 'package:hive/hive.dart';
 import 'package:resistance_log/app/player.dart';
 import 'package:resistance_log/app/routing.dart';
+import 'package:resistance_log/app_localizations.dart';
 
 class PlayersPage extends StatefulWidget {
   @override
@@ -10,6 +11,7 @@ class PlayersPage extends StatefulWidget {
 }
 
 class _PlayersPageState extends State<PlayersPage> {
+  final globalKey = GlobalKey<ScaffoldState>();
   List<Card> playersCard = new List();
   String player;
   Box<Player> playersBox = Hive.box('players-box');
@@ -22,7 +24,7 @@ class _PlayersPageState extends State<PlayersPage> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('Choose color'),
+            title: Text(AppLocalizations.of(context).translate('color')),
             actions: <Widget>[
               FlatButton(
                 child: Text('OK'),
@@ -51,24 +53,56 @@ class _PlayersPageState extends State<PlayersPage> {
       child: Align(
         alignment: Alignment.center,
         child: Text(
-          player.getName(),
+          player.getName() ?? '',
           style: TextStyle(fontSize: 20),
         ),
       ),
     );
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        key: globalKey,
+        floatingActionButton: FloatingActionButton(
+          child: Icon(Icons.add),
+          onPressed: _isButtonDisabled
+              ? null
+              : () {
+                  if (player == null || player.length == 0) {
+                    globalKey.currentState.showSnackBar(SnackBar(
+                      backgroundColor: Colors.red,
+                      content: Text(AppLocalizations.of(context)
+                          .translate("player_name")),
+                    ));
+                  } else {
+                    playersBox
+                        .add(Player.withNameAndColor(player, currentColor));
+                    setState(() {
+                      playersCard.add(drawPlayerCard(
+                          Player.withNameAndColor(player, currentColor)));
+                      playerController.clear();
+                    });
+                  }
+                },
+        ),
         appBar: AppBar(
-          title: Text("Lobby"),
+          title: Text(AppLocalizations.of(context).translate('lobby')),
           actions: <Widget>[
             IconButton(
               icon: Icon(Icons.games),
+              tooltip: AppLocalizations.of(context).translate('game_button'),
               onPressed: () {
-                _isButtonDisabled = true;
-                Navigator.pushNamed(context, Router.gamePage);
+                if (playersBox.length < 3) {
+                  globalKey.currentState.showSnackBar(SnackBar(
+                    backgroundColor: Colors.red,
+                    content: Text(
+                        AppLocalizations.of(context).translate('small_lobby')),
+                  ));
+                } else {
+                  _isButtonDisabled = true;
+                  Navigator.pushNamed(context, Router.gamePage);
+                }
               },
             )
           ],
@@ -90,25 +124,12 @@ class _PlayersPageState extends State<PlayersPage> {
                   color: currentColor,
                   onPressed: showColorPicker,
                 ),
-                IconButton(
-                  icon: Icon(Icons.add),
-                  onPressed: _isButtonDisabled
-                      ? null
-                      : () {
-                          playersBox.add(
-                              Player.withNameAndColor(player, currentColor));
-                          setState(() {
-                            playersCard.add(drawPlayerCard(Player.withNameAndColor(player, currentColor)));
-                            playerController.clear();
-                          });
-                        },
-                ),
               ],
             ),
             if (playersCard.length > 0)
               Expanded(
                 child: ListView.builder(
-                  itemCount: playersBox.length,
+                  itemCount: playersCard.length,
                   itemBuilder: (context, index) {
                     return playersCard[index];
                   },

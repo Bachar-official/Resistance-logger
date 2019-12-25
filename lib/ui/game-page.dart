@@ -4,8 +4,7 @@ import 'package:resistance_log/app/operations.dart';
 import 'package:resistance_log/app/player.dart';
 import 'package:resistance_log/app/round.dart';
 import 'package:resistance_log/app/routing.dart';
-
-import '../app/operations.dart';
+import 'package:resistance_log/app_localizations.dart';
 
 class GamePage extends StatefulWidget {
   @override
@@ -44,6 +43,7 @@ class _GamePageState extends State<GamePage> {
 
   @override
   void initState(){
+    super.initState();
     setState(() {
       onChanged(_selected);
     });
@@ -119,10 +119,11 @@ class _GamePageState extends State<GamePage> {
     playersContainer = fillContainerList(players);
     return Scaffold(
         appBar: AppBar(
-          title: Text("R-d " + Operations.getRoundsCount().toString()),
+          title: Text(AppLocalizations.of(context).translate('round') + " " + Operations.getRoundsCount().toString()),
           actions: <Widget>[
             IconButton(
                 icon: Icon(Icons.check_circle),
+                tooltip: AppLocalizations.of(context).translate('success_hint'),
                 color: Colors.blue,
                 onPressed: () {
                   roundBox.add(
@@ -131,6 +132,7 @@ class _GamePageState extends State<GamePage> {
                 }),
             IconButton(
                 icon: Icon(Icons.cancel),
+                tooltip: AppLocalizations.of(context).translate('fail_hint'),
                 color: Colors.red,
                 onPressed: () {
                   roundBox
@@ -139,6 +141,7 @@ class _GamePageState extends State<GamePage> {
                 }),
             IconButton(
                 icon: Icon(Icons.cached),
+                tooltip: AppLocalizations.of(context).translate('vote_failed'),
                 color: Colors.grey,
                 onPressed: () {
                   roundBox.add(
@@ -147,6 +150,7 @@ class _GamePageState extends State<GamePage> {
                 }),
             IconButton(
                 icon: Icon(Icons.screen_share),
+                tooltip: AppLocalizations.of(context).translate('progress_hint'),
                 onPressed: () {
                   Navigator.pushNamed(context, Router.progressPage);
                 }),
