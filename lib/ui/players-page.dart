@@ -63,18 +63,27 @@ class _PlayersPageState extends State<PlayersPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: globalKey,
+        key: globalKey,
         floatingActionButton: FloatingActionButton(
           child: Icon(Icons.add),
           onPressed: _isButtonDisabled
               ? null
               : () {
-                  playersBox.add(Player.withNameAndColor(player, currentColor));
-                  setState(() {
-                    playersCard.add(drawPlayerCard(
-                        Player.withNameAndColor(player, currentColor)));
-                    playerController.clear();
-                  });
+                  if (player == null || player.length == 0) {
+                    globalKey.currentState.showSnackBar(SnackBar(
+                      backgroundColor: Colors.red,
+                      content: Text(AppLocalizations.of(context)
+                          .translate("player_name")),
+                    ));
+                  } else {
+                    playersBox
+                        .add(Player.withNameAndColor(player, currentColor));
+                    setState(() {
+                      playersCard.add(drawPlayerCard(
+                          Player.withNameAndColor(player, currentColor)));
+                      playerController.clear();
+                    });
+                  }
                 },
         ),
         appBar: AppBar(
@@ -87,7 +96,8 @@ class _PlayersPageState extends State<PlayersPage> {
                 if (playersBox.length < 3) {
                   globalKey.currentState.showSnackBar(SnackBar(
                     backgroundColor: Colors.red,
-                    content: Text(AppLocalizations.of(context).translate('small_lobby')),
+                    content: Text(
+                        AppLocalizations.of(context).translate('small_lobby')),
                   ));
                 } else {
                   _isButtonDisabled = true;

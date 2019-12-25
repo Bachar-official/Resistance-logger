@@ -8,5 +8,6 @@
   "success_hint": "Mission completed",
   "fail_hint": "Mission failed",
   "vote_failed": "Voting failed",
-  "progress_hint": "Watch the progress of game"
+  "progress_hint": "Watch the progress of game",
+  "player_name": "Player name must contains at least 1 character!"
 }
