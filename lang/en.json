@@ -3,5 +3,10 @@
   "round": "R-d",
   "small_lobby": "You must have at least 3 players!",
   "color": "Choose color",
-  "no_rounds": "No rounds yet!"
+  "no_rounds": "No rounds yet!",
+  "game_button": "Launch game",
+  "success_hint": "Mission completed",
+  "fail_hint": "Mission failed",
+  "vote_failed": "Voting failed",
+  "progress_hint": "Watch the progress of game"
 }

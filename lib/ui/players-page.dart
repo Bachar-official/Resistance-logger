@@ -82,6 +82,7 @@ class _PlayersPageState extends State<PlayersPage> {
           actions: <Widget>[
             IconButton(
               icon: Icon(Icons.games),
+              tooltip: AppLocalizations.of(context).translate('game_button'),
               onPressed: () {
                 if (playersBox.length < 3) {
                   globalKey.currentState.showSnackBar(SnackBar(

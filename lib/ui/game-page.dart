@@ -123,6 +123,7 @@ class _GamePageState extends State<GamePage> {
           actions: <Widget>[
             IconButton(
                 icon: Icon(Icons.check_circle),
+                tooltip: AppLocalizations.of(context).translate('success_hint'),
                 color: Colors.blue,
                 onPressed: () {
                   roundBox.add(
@@ -131,6 +132,7 @@ class _GamePageState extends State<GamePage> {
                 }),
             IconButton(
                 icon: Icon(Icons.cancel),
+                tooltip: AppLocalizations.of(context).translate('fail_hint'),
                 color: Colors.red,
                 onPressed: () {
                   roundBox
@@ -139,6 +141,7 @@ class _GamePageState extends State<GamePage> {
                 }),
             IconButton(
                 icon: Icon(Icons.cached),
+                tooltip: AppLocalizations.of(context).translate('vote_failed'),
                 color: Colors.grey,
                 onPressed: () {
                   roundBox.add(
@@ -147,6 +150,7 @@ class _GamePageState extends State<GamePage> {
                 }),
             IconButton(
                 icon: Icon(Icons.screen_share),
+                tooltip: AppLocalizations.of(context).translate('progress_hint'),
                 onPressed: () {
                   Navigator.pushNamed(context, Router.progressPage);
                 }),
