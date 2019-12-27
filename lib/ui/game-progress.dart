@@ -22,7 +22,7 @@ class _GameProgressState extends State<GameProgress> {
       List<DataRow> dataRows = Operations.roundRow(rounds);
       return Scaffold(
         appBar: AppBar(
-          title: Text("Rounds"),
+          title: Text(AppLocalizations.of(context).translate('game_progress')),
         ),
         body: SingleChildScrollView(
           scrollDirection: Axis.vertical,
